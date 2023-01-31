@@ -1,5 +1,5 @@
-# Instructions for Hello World
+# nostr-rs-relay
 
-Instructions go here. These appear to the user in the UI on the Service page under **Instructions**.
+Relays are dumb. They just have connections and persist data. Not much to do here.
 
-You are allowed to include basic [Markdown formatting](https://www.markdownguide.org/basic-syntax).
+https://git.sr.ht/~gheartsfield/nostr-rs-relay

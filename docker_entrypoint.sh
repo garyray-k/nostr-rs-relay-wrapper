@@ -1,3 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
-exec tini hello-world
+set -ea
+
+echo "Starting nostr-rs-relay..."
+exec ./nostr-rs-relay --db ${APP_DATA}

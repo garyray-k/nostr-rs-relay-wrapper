@@ -1,11 +1,48 @@
-FROM alpine:3.17
+FROM docker.io/library/rust:1.66.0 as builder
 
-RUN apk update
-RUN apk add --no-cache tini && \
-    rm -f /var/cache/apk/*
+RUN USER=root cargo install cargo-auditable
+RUN USER=root cargo new --bin nostr-rs-relay
+WORKDIR /nostr-rs-relay
+COPY ./nostr-rs-relay/Cargo.toml ./Cargo.toml
+COPY ./nostr-rs-relay/Cargo.lock ./Cargo.lock
+# build dependencies only (caching)
+RUN cargo auditable build --release --locked
+# get rid of starter project code
+RUN rm src/*.rs
 
-ARG ARCH
-ADD ./hello-world/target/${ARCH}-unknown-linux-musl/release/hello-world /usr/local/bin/hello-world
-RUN chmod +x /usr/local/bin/hello-world
-ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
-RUN chmod a+x /usr/local/bin/docker_entrypoint.sh
+# copy project source code
+COPY ./nostr-rs-relay/src ./src
+
+# build auditable release using locked deps
+RUN rm ./target/release/deps/nostr*relay*
+RUN cargo auditable build --release --locked
+
+FROM docker.io/library/debian:bullseye-slim
+
+ARG APP=/usr/src/app
+ARG APP_DATA=/usr/src/app/db
+RUN apt-get update \
+    && apt-get install -y ca-certificates tzdata sqlite3 libc6 \
+    && rm -rf /var/lib/apt/lists/*
+
+EXPOSE 8080
+
+ENV TZ=Etc/UTC \
+    APP_USER=appuser
+
+RUN groupadd $APP_USER \
+    && useradd -g $APP_USER $APP_USER \
+    && mkdir -p ${APP} \
+    && mkdir -p ${APP_DATA}
+
+COPY --from=builder /nostr-rs-relay/target/release/nostr-rs-relay ${APP}/nostr-rs-relay
+
+RUN chown -R $APP_USER:$APP_USER ${APP}
+
+USER $APP_USER
+WORKDIR ${APP}
+
+ENV RUST_LOG=info,nostr_rs_relay=info
+ENV APP_DATA=${APP_DATA}
+
+ENTRYPOINT [ "./docker_entrypoint.sh" ]
