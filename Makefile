@@ -29,19 +29,19 @@ clean:
 scripts/embassy.js: $(TS_FILES)
 	deno bundle scripts/embassy.ts scripts/embassy.js
 
-docker-images/aarch64.tar: Dockerfile docker_entrypoint.sh nostr-rs-relay/target/aarch64-unknown-linux-musl/release/nostr-rs-relay
-ifeq ($(ARCH),x86_64)
-else
-	mkdir -p docker-images
-	docker buildx build --tag start9/$(PKG_ID)/main:$(PKG_VERSION) --build-arg ARCH=aarch64 --platform=linux/arm64 -o type=docker,dest=docker-images/aarch64.tar .
-endif
+# docker-images/aarch64.tar: Dockerfile docker_entrypoint.sh nostr-rs-relay/target/aarch64-unknown-linux-musl/release/nostr-rs-relay
+# ifeq ($(ARCH),x86_64)
+# else
+# 	mkdir -p docker-images
+# 	docker buildx build --tag start9/$(PKG_ID)/main:$(PKG_VERSION) --build-arg ARCH=aarch64 --platform=linux/arm64 -o type=docker,dest=docker-images/aarch64.tar .
+# endif
 
-docker-images/x86_64.tar: Dockerfile docker_entrypoint.sh nostr-rs-relay/target/x86_64-unknown-linux-musl/release/nostr-rs-relay
-ifeq ($(ARCH),aarch64)
-else
-	mkdir -p docker-images
-	docker buildx build --tag start9/$(PKG_ID)/main:$(PKG_VERSION) --build-arg ARCH=x86_64 --platform=linux/amd64 -o type=docker,dest=docker-images/x86_64.tar .
-endif
+# docker-images/x86_64.tar: Dockerfile docker_entrypoint.sh nostr-rs-relay/target/x86_64-unknown-linux-musl/release/nostr-rs-relay
+# ifeq ($(ARCH),aarch64)
+# else
+# 	mkdir -p docker-images
+# 	docker buildx build --tag start9/$(PKG_ID)/main:$(PKG_VERSION) --build-arg ARCH=x86_64 --platform=linux/amd64 -o type=docker,dest=docker-images/x86_64.tar .
+# endif
 
 $(PKG_ID).s9pk: manifest.yaml instructions.md nostrocket-medium.jpeg LICENSE scripts/embassy.js docker-images/aarch64.tar docker-images/x86_64.tar
 ifeq ($(ARCH),aarch64)
@@ -53,8 +53,8 @@ else
 endif
 	@embassy-sdk pack
 
-nostr-rs-relay/target/aarch64-unknown-linux-musl/release/nostr-rs-relay: $(SRC)
-	docker run --rm -it -v ~/.cargo/registry:/root/.cargo/registry -v "$(shell pwd)"/nostr-rs-relay:/home/rust/src messense/rust-musl-cross:aarch64-musl cargo build --release
+# nostr-rs-relay/target/aarch64-unknown-linux-musl/release/nostr-rs-relay: $(SRC)
+# 	docker run --rm -it -v ~/.cargo/registry:/root/.cargo/registry -v "$(shell pwd)"/nostr-rs-relay:/home/rust/src messense/rust-musl-cross:aarch64-musl cargo build --release
 
-nostr-rs-relay/target/x86_64-unknown-linux-musl/release/nostr-rs-relay: $(SRC)
-	docker run --rm -it -v ~/.cargo/registry:/root/.cargo/registry -v "$(shell pwd)"/nostr-rs-relay:/home/rust/src messense/rust-musl-cross:x86_64-musl cargo build --release
+# nostr-rs-relay/target/x86_64-unknown-linux-musl/release/nostr-rs-relay: $(SRC)
+# 	docker run --rm -it -v ~/.cargo/registry:/root/.cargo/registry -v "$(shell pwd)"/nostr-rs-relay:/home/rust/src messense/rust-musl-cross:x86_64-musl cargo build --release
