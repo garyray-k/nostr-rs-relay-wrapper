@@ -20,7 +20,7 @@ RUN cargo auditable build --release --locked
 FROM docker.io/library/debian:bullseye-slim
 
 ARG APP=/usr/src/app
-ARG APP_DATA=/usr/src/app/db
+ARG APP_DATA=/usr/src/app/data/db
 RUN apt-get update \
     && apt-get install -y ca-certificates tzdata sqlite3 libc6 wget curl sudo bash tini libssl-dev  \
     && wget https://github.com/mikefarah/yq/releases/download/v4.25.1/yq_linux_arm.tar.gz -O - |\
@@ -48,5 +48,7 @@ RUN chown -R $APP_USER:$APP_USER ${APP}
 USER $APP_USER
 WORKDIR ${APP}
 
+# COPY ./config.toml ${APP_DATA}/config/config.toml 
+COPY ./config.toml ${APP_DATA}
 ENV RUST_LOG=info,nostr_rs_relay=info
 ENV APP_DATA=${APP_DATA}

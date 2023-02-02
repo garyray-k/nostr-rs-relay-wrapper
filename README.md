@@ -92,20 +92,9 @@ To build the `hello-world` package for all platforms using embassy-sdk version >
 ```
 make
 ```
+To build this package, run `./build.sh`.
 
-To build the `hello-world` package for a single platform using embassy-sdk version <=0.3.2, run:
-
-```
-# for amd64
-make ARCH=x86_64
-```
-
-or
-
-```
-# for arm64
-make ARCH=aarch64
-```
+This wrapper is for nostr-rs-relay found [here](https://git.sr.ht/~gheartsfield/nostr-rs-relay).
 
 ## Installing (on embassyOS)
 
@@ -129,6 +118,7 @@ make install
 
 ### Verify Install
 
-Go to your Embassy Services page, select **Hello World**, configure and start the service. Then, verify its interfaces are accessible.
+Check the logs of tyhe service to see events populate.
 
-**Done!**
+> **Tip:** Check out https://github.com/fiatjaf/noscl for an easy testing client
+

@@ -6,9 +6,9 @@ id:
   # A human readable service title
 title: "nostr-rs-relay"
 # Service version - accepts up to four digits, where the last confirms to revisions necessary for EmbassyOS - see documentation: https://github.com/Start9Labs/emver-rs. This value will change with each release of the service.
-version: 0.0.1
+version: 0.8.1
 # Release notes for the update - can be a string, paragraph or URL
-release-notes: "First implementation of wrapping nostr-rs-relay"
+release-notes: "https://git.sr.ht/~gheartsfield/nostr-rs-relay/refs/0.8.1"
 # The type of license for the project. Include the LICENSE in the root of the project directory. A license is required for a Start9 package.
 license: mit
 # The Start9 wrapper repository URL for the package. This repo contains the manifest file (this), any scripts necessary for configuration, backups, actions, or health checks (more below). This key must exist. But could be embedded into the source repository.
@@ -20,11 +20,11 @@ support-site: "https://git.sr.ht/~gheartsfield/nostr-rs-relay"
 # URL to the marketing site for the project. This key can be omitted if none exists, or it can link to the original project repository.
 # marketing-site: "https://start9.com/"
 # The series of commands to build the project into an s9pk for arm64/v8. In this case we are using a Makefile with the simple build command "make".
-build: ["make"]
+build: ["./build.sh"]
 # Human readable descriptors for the service. These are used throughout the EmbassyOS user interface, primarily in the marketplace.
 description:
   # This is the first description visible to the user in the marketplace.
-  short: nostr relay
+  short: nostr rs relay
   # This description will display with additional details in the service's individual marketplace page
   long: |
     This is a nostr relay, written in Rust. It currently supports the entire relay protocol, and persists data with SQLite. There is experimental support for Postgresql.
@@ -64,7 +64,8 @@ main:
   # Specifies where to mount the data volume(s), if there are any. Mounts for pointer dependency volumes are also denoted here. These are necessary if data needs to be read from / written to these volumes.
   mounts:
     # Specifies where on the service's file system its persistence directory should be mounted prior to service startup
-    main: /root
+    main: /usr/src/app/data
+    config: /usr/src/app/config
 # This is where health checks would be defined - see a more advanced example in https://github.com/Start9Labs/embassy-pages-wrapper
 health-checks: {}
 config: ~
@@ -75,14 +76,16 @@ volumes:
   # This is the image where files from the project asset directory will go
   main:
     type: data
+  config:
+    type: data
 # This specifies how to configure the port mapping for exposing the service over TOR and LAN (if applicable). Many interfaces can be specified depending on the needs of the service. If it can be launched over a Local Area Network connection, specify a `lan-config`. Otherwise, at minimum, a `tor-config` must be specified.
 interfaces:
   # This key is the internal name that the OS will use to configure the interface
   main:
     # A human readable name for display in the UI
-    name: nostr-rs-relay websocket
+    name: nostr-rs-relay
     # A descriptive description of what the interface does
-    description: ws connection for the nostr relay running on your embassy
+    description: ws (proxied through http/https) connection for the nostr relay running on your embassy device
     tor-config:
       # Port mappings are from the external port to the internal container port
       port-mapping:
