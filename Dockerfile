@@ -34,11 +34,9 @@ RUN chmod a+x *.sh
 EXPOSE 8080
 
 ENV TZ=Etc/UTC \
-    APP_USER=appuser
+    APP_USER=root
 
-RUN groupadd $APP_USER \
-    && useradd -g $APP_USER $APP_USER \
-    && mkdir -p ${APP} \
+RUN mkdir -p ${APP} \
     && mkdir -p ${APP_DATA}
 
 COPY --from=builder /nostr-rs-relay/target/release/nostr-rs-relay ${APP}/nostr-rs-relay
