@@ -1,6 +1,8 @@
 # Wrapper for nostr-rs-relay
 
-Hello World is a simple, minimal project that serves as a template for creating a service that runs on embassyOS. This repository creates the `s9pk` package that is installed to run `hello-world` on [embassyOS](https://github.com/Start9Labs/embassy-os/). Learn more about service packaging in the [Developer Docs](https://start9.com/latest/developer-docs/).
+nostr-rs-relay is a [nostr protocol](https://github.com/nostr-protocol/nostr) relay written in Rust.
+
+As of 3 Feb 2023, there has been limited testing for this wrapper. The relay works well and is used by [Damus](https://github.com/damus-io/damus) at this time.
 
 ## Dependencies
 
@@ -12,6 +14,7 @@ Install the system dependencies below to build this project by following the ins
 - [deno](https://deno.land/)
 - [make](https://www.gnu.org/software/make/)
 - [embassy-sdk](https://github.com/Start9Labs/embassy-os/tree/master/backend)
+- [rust](https://www.rust-lang.org/tools/install)
 
 ## Build environment
 
@@ -73,26 +76,25 @@ cd embassy-os/backend/
 embassy-sdk init
 ```
 
-Now you are ready to build the `hello-world` package!
+Now you are ready to build the `nostr-rs-relay` package!
 
 ## Cloning
 
 Clone the project locally:
 
 ```
-git clone https://github.com/Start9Labs/hello-world-wrapper.git
-cd hello-world-wrapper
+git clone https://github.com/garyray-k/nostr-rs-relay-wrapper.git
+cd nostr-rs-relay-wrapper
 git submodule update --init --recursive
 ```
 
 ## Building
 
-To build the `hello-world` package for all platforms using embassy-sdk version >=0.3.3, run the following command:
+To build the `nostr-rs-relay` package for all platforms using embassy-sdk version >=0.3.3, run the following command:
 
 ```
-make
+./build.sh
 ```
-To build this package, run `./build.sh`.
 
 This wrapper is for nostr-rs-relay found [here](https://git.sr.ht/~gheartsfield/nostr-rs-relay).
 
@@ -114,7 +116,7 @@ If you already have your `embassy-cli` config file setup with a default `host`, 
 make install
 ```
 
-> **Tip:** You can also install the hello-world.s9pk using **Sideload Service** under the **System > Manage** section.
+> **Tip:** You can also install the nostr-rs-relay.s9pk using **Sideload Service** under the **System > Manage** section.
 
 ### Verify Install
 
